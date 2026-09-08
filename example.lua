@@ -4,7 +4,7 @@
 	then execute this file in your executor.
 ]]
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/USER/REPO/main/main.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"))()
 
 -- [[ // Window // ]]
 local window = library:CreateWindow({Accent = Color3.fromRGB(255, 120, 30), Key = Enum.KeyCode.Z})
@@ -18,7 +18,36 @@ local setting = window:CreatePage({Icon = "rbxassetid://8547256547"})
 local skins = window:CreatePage({Icon = "rbxassetid://8547258459"})
 local config = window:CreatePage({Icon = "rbxassetid://8547269749"})
 
--- [[ // Sections // ]]
+-- [[ // Aimbot Sections // ]]
+local aimbot_main = aimbot:CreateSection({Name = "Aimbot", Size = 200, Side = "Left"})
+local aimbot_filter = aimbot:CreateSection({Name = "Filter", Size = 158, Side = "Left"})
+local aimbot_misc = aimbot:CreateSection({Name = "Misc", Size = 200, Side = "Right"})
+
+-- [[ // Aimbot Content // ]]
+aimbot_main:CreateKeybind({Name = "Aimbot Key", Mode = "Hold"})
+aimbot_main:CreateToggle({Name = "Enabled", State = true})
+aimbot_main:CreateToggle({Name = "Visibility Check", State = true})
+aimbot_main:CreateToggle({Name = "Through Walls", State = false})
+aimbot_main:CreateDropdown({Name = "Target Priority", State = 1, Options = {"Closest", "Lowest Health", "Highest Health", "Random"}})
+aimbot_main:CreateDropdown({Name = "Aim Bone", State = 1, Options = {"Head", "Chest", "Pelvis", "Nearest"}})
+aimbot_main:CreateSlider({Name = "FOV", State = 180, Max = 360, Min = 0, Decimals = 1, Suffix = "px"})
+aimbot_main:CreateSlider({Name = "Smoothing", State = 5, Max = 20, Min = 0, Decimals = 1, Suffix = ""})
+--
+aimbot_filter:CreateToggle({Name = "Teammates", State = false})
+aimbot_filter:CreateToggle({Name = "Dormant", State = false})
+aimbot_filter:CreateToggle({Name = "NPCs", State = false})
+aimbot_filter:CreateToggle({Name = "Local player", State = false})
+aimbot_filter:CreateMultibox({Name = "Filter Flags", State = {1}, Options = {"Visible", "Behind Wall", "Dormant", "Friendly"}})
+--
+aimbot_misc:CreateToggle({Name = "Prediction", State = true})
+aimbot_misc:CreateToggle({Name = "Auto Fire", State = false})
+aimbot_misc:CreateToggle({Name = "Silent Aim", State = false})
+aimbot_misc:CreateToggle({Name = "Trigger Bot", State = false})
+aimbot_misc:CreateSlider({Name = "Hit Chance", State = 100, Max = 100, Min = 0, Decimals = 1, Suffix = "%"})
+aimbot_misc:CreateSlider({Name = "Min Damage", State = 20, Max = 130, Min = 0, Decimals = 1, Suffix = "hp"})
+aimbot_misc:CreateColorpicker({Name = "Aimbot FOV Circle", State = Color3.fromRGB(255, 255, 255)})
+
+-- [[ // Visuals Sections // ]]
 local playeresp = visuals:CreateSection({Name = "Player ESP", Size = 330, Side = "Left"})
 local coloredmodels = visuals:CreateSection({Name = "Colored models", Size = 158, Side = "Left"})
 local otheresp = visuals:CreateSection({Name = "Other ESP", Size = 200, Side = "Right"})
