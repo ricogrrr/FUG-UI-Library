@@ -389,6 +389,7 @@ function Library:CreateWindow(cfg)
 
     --| Tab system |--
     local tabs = {}
+    local tabLabels = {} -- maps tabBtn -> label TextLabel (for icon tabs)
     local tabCount = 0
 
     local WindowObj = {}
@@ -409,6 +410,7 @@ function Library:CreateWindow(cfg)
         round(tabBtn, 6)
 
         local tabIcon
+        local tabLabel
         if icon then
             tabIcon = create("ImageLabel", {
                 Size = UDim2.new(0, 16, 0, 16),
@@ -419,7 +421,7 @@ function Library:CreateWindow(cfg)
             })
             tabBtn.TextXAlignment = Enum.TextXAlignment.Left
             -- Adjust text position to leave room for icon
-            local tabLabel = create("TextLabel", {
+            tabLabel = create("TextLabel", {
                 Size = UDim2.new(1, -34, 1, 0),
                 Position = UDim2.new(0, 30, 0, 0),
                 BackgroundTransparency = 1,
@@ -431,8 +433,7 @@ function Library:CreateWindow(cfg)
                 Parent = tabBtn,
             })
             tabBtn.Text = ""
-            -- Update selectTab to use tabLabel instead of tabBtn for text color
-            tabBtn:SetAttribute("TabLabel", tabLabel)
+            tabLabels[tabBtn] = tabLabel
         end
 
         local page = create("ScrollingFrame", {
@@ -453,11 +454,10 @@ function Library:CreateWindow(cfg)
         })
         padding(page, 4)
 
-        local tabLabel = tabBtn:GetAttribute("TabLabel")
         local function selectTab()
             for _, t in ipairs(tabs) do
                 t.button.BackgroundTransparency = 1
-                local tl = t.button:GetAttribute("TabLabel")
+                local tl = tabLabels[t.button]
                 if tl then
                     tl.TextColor3 = Theme.TextDark
                 else
