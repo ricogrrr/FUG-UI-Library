@@ -11,7 +11,7 @@ local window = library:CreateWindow({Accent = Color3.fromRGB(255, 120, 30), Key 
 
 -- [[ // Pages // ]]
 local rage = window:CreatePage({Icon = "rbxassetid://8547236654"})
-local antiaim = window:CreatePage({Icon = "rbxthumb://type=Asset&id=122516557300999&w=150&h=150"})
+local antiaim = window:CreatePage({Icon = "rbxassetid://85523754787174"})
 local aimbot = window:CreatePage({Icon = "rbxassetid://8547249956"})
 local visuals = window:CreatePage({Icon = "rbxassetid://8547254518"})
 local setting = window:CreatePage({Icon = "rbxassetid://8547256547"})
