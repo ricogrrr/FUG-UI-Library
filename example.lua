@@ -18,6 +18,45 @@ local setting = window:CreatePage({Icon = "rbxassetid://8547256547"})
 local skins = window:CreatePage({Icon = "rbxassetid://8547258459"})
 local config = window:CreatePage({Icon = "rbxassetid://8547269749"})
 
+-- [[ // Rage Sections // ]]
+local rage_main = rage:CreateSection({Name = "Ragebot", Size = 250, Side = "Left"})
+local rage_resolver = rage:CreateSection({Name = "Resolver", Size = 200, Side = "Right"})
+
+-- [[ // Rage Content // ]]
+rage_main:CreateKeybind({Name = "Ragebot Key", Mode = "Toggle"})
+rage_main:CreateToggle({Name = "Enabled", State = true})
+rage_main:CreateToggle({Name = "Auto Fire", State = true})
+rage_main:CreateDropdown({Name = "Hitbox", State = 1, Options = {"Head", "Chest", "Pelvis", "Nearest"}})
+rage_main:CreateMultibox({Name = "Hitscan", State = {1, 2}, Options = {"Head", "Chest", "Arms", "Legs"}})
+rage_main:CreateSlider({Name = "Hitchance", State = 80, Max = 100, Min = 0, Decimals = 1, Suffix = "%"})
+rage_main:CreateSlider({Name = "Min Damage", State = 20, Max = 130, Min = 0, Decimals = 1, Suffix = "hp"})
+--
+rage_resolver:CreateToggle({Name = "Enabled", State = true})
+rage_resolver:CreateDropdown({Name = "Mode", State = 1, Options = {"Bruteforce", "Delta", "Layered"}})
+rage_resolver:CreateToggle({Name = "Prefer safe point", State = true})
+rage_resolver:CreateToggle({Name = "Force body yaw", State = false})
+rage_resolver:CreateSlider({Name = "Max misses", State = 3, Max = 10, Min = 1, Decimals = 1, Suffix = ""})
+
+-- [[ // Anti-Aim Sections // ]]
+local antiaim_main = antiaim:CreateSection({Name = "Anti-Aim", Size = 260, Side = "Left"})
+local antiaim_fakelag = antiaim:CreateSection({Name = "Fake Lag", Size = 180, Side = "Right"})
+
+-- [[ // Anti-Aim Content // ]]
+antiaim_main:CreateKeybind({Name = "Anti-Aim Key", Mode = "Toggle"})
+antiaim_main:CreateToggle({Name = "Enabled", State = false})
+antiaim_main:CreateDropdown({Name = "Pitch", State = 2, Options = {"Off", "Down", "Up", "Zero"}})
+antiaim_main:CreateDropdown({Name = "Yaw", State = 1, Options = {"Backward", "Spin", "Jitter", "Random"}})
+antiaim_main:CreateDropdown({Name = "Yaw Base", State = 1, Options = {"Local view", "At targets"}})
+antiaim_main:CreateSlider({Name = "Yaw Offset", State = 0, Max = 180, Min = -180, Decimals = 1, Suffix = "°"})
+antiaim_main:CreateToggle({Name = "Freestanding", State = false})
+antiaim_main:CreateToggle({Name = "Disable on grenade", State = true})
+--
+antiaim_fakelag:CreateToggle({Name = "Enabled", State = false})
+antiaim_fakelag:CreateDropdown({Name = "Mode", State = 1, Options = {"Static", "Random", "Switch"}})
+antiaim_fakelag:CreateSlider({Name = "Limit", State = 8, Max = 15, Min = 1, Decimals = 1, Suffix = "t"})
+antiaim_fakelag:CreateToggle({Name = "While shooting", State = false})
+antiaim_fakelag:CreateToggle({Name = "In air", State = false})
+
 -- [[ // Aimbot Sections // ]]
 local aimbot_main = aimbot:CreateSection({Name = "Aimbot", Size = 200, Side = "Left"})
 local aimbot_filter = aimbot:CreateSection({Name = "Filter", Size = 158, Side = "Left"})
@@ -126,3 +165,53 @@ effects:CreateToggle({Name = "Disable rendering of teamates", State = false})
 effects:CreateToggle({Name = "Bullet tracers", State = false})
 effects:CreateToggle({Name = "Bullet impacts", State = false})
 effects:CreateToggle({Name = "Override Skybox", State = false})
+
+-- [[ // Settings Sections // ]]
+local setting_menu = setting:CreateSection({Name = "Menu", Size = 200, Side = "Left"})
+local setting_other = setting:CreateSection({Name = "Other", Size = 158, Side = "Right"})
+
+-- [[ // Settings Content // ]]
+setting_menu:CreateKeybind({Name = "Menu Key", State = {"KeyCode", "Z"}, Mode = "Toggle"})
+setting_menu:CreateColorpicker({Name = "Accent", State = Color3.fromRGB(255, 120, 30), Callback = function(Color) window.Accent = Color end})
+setting_menu:CreateToggle({Name = "Watermark", State = true})
+setting_menu:CreateToggle({Name = "Keybind list", State = false})
+setting_menu:CreateDropdown({Name = "UI Scale", State = 3, Options = {"50%", "75%", "100%", "125%"}})
+setting_menu:CreateSlider({Name = "FPS Cap", State = 240, Max = 480, Min = 30, Decimals = 1, Suffix = "fps"})
+--
+setting_other:CreateToggle({Name = "Clantag", State = false})
+setting_other:CreateToggle({Name = "Auto accept", State = true})
+setting_other:CreateToggle({Name = "Unlock inventory", State = false})
+setting_other:CreateToggle({Name = "Bypass sv_pure", State = false})
+setting_other:CreateMultibox({Name = "Log events", State = {1}, Options = {"Purchases", "Damage", "Misses", "Hits"}})
+
+-- [[ // Skins Sections // ]]
+local skins_main = skins:CreateSection({Name = "Weapon Skins", Size = 260, Side = "Left"})
+local skins_agents = skins:CreateSection({Name = "Agents", Size = 180, Side = "Right"})
+
+-- [[ // Skins Content // ]]
+skins_main:CreateDropdown({Name = "Weapon", State = 1, Options = {"AK-47", "M4A4", "AWP", "Desert Eagle", "Knife"}})
+skins_main:CreateDropdown({Name = "Skin", State = 1, Options = {"Asiimov", "Redline", "Dragon Lore", "Printstream", "Fade"}})
+skins_main:CreateToggle({Name = "StatTrak", State = false})
+skins_main:CreateSlider({Name = "Wear", State = 0, Max = 1, Min = 0, Decimals = 0.01, Suffix = ""})
+skins_main:CreateSlider({Name = "Seed", State = 1, Max = 1000, Min = 1, Decimals = 1, Suffix = ""})
+skins_main:CreateToggle({Name = "Apply on spawn", State = true})
+--
+skins_agents:CreateDropdown({Name = "T Agent", State = 1, Options = {"Default", "Sir Bloody", "Number K"}})
+skins_agents:CreateDropdown({Name = "CT Agent", State = 1, Options = {"Default", "Lt. Commander", "Getaway Sally"}})
+skins_agents:CreateToggle({Name = "Glove changer", State = false})
+skins_agents:CreateToggle({Name = "Knife changer", State = false})
+
+-- [[ // Config Sections // ]]
+local config_main = config:CreateSection({Name = "Configs", Size = 200, Side = "Left"})
+local config_cloud = config:CreateSection({Name = "Cloud", Size = 158, Side = "Right"})
+
+-- [[ // Config Content // ]]
+config_main:CreateDropdown({Name = "Config", State = 1, Options = {"Config 1", "Config 2", "Config 3", "Config 4"}})
+config_main:CreateToggle({Name = "Auto load last", State = true})
+config_main:CreateToggle({Name = "Save on unload", State = true})
+config_main:CreateKeybind({Name = "Save config", Mode = "Toggle"})
+--
+config_cloud:CreateToggle({Name = "Cloud configs", State = false})
+config_cloud:CreateToggle({Name = "Share current", State = false})
+config_cloud:CreateToggle({Name = "Auto update", State = true})
+config_cloud:CreateDropdown({Name = "Sort by", State = 1, Options = {"Name", "Date", "Author"}})

@@ -342,6 +342,17 @@ function library:CreatePage(Properties)
 			ImageColor3 = Color3.fromRGB(100, 100, 100)
 		})
 		--
+		task.spawn(function()
+			for _ = 1, 12 do
+				if Page_Tab_Image.IsLoaded then
+					return
+				end
+				task.wait(0.5)
+			end
+			--
+			Page_Tab_Image.Image = "rbxassetid://8547269749"
+		end)
+		--
 		local Page_Tab_Button = utility:RenderObject("TextButton", {
 			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 			BackgroundTransparency = 1,
