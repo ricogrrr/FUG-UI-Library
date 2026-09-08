@@ -120,10 +120,10 @@ end
 function Library:Notify(cfg)
     cfg = cfg or {}
     local container = ensureNotifyFolder()
+    local notifHeight = 56
     local notif = create("Frame", {
         Name = "Notification",
-        Size = UDim2.new(1, 0, 0, 0),
-        AutomaticSize = Enum.AutomaticSize.Y,
+        Size = UDim2.new(1, 0, 0, notifHeight),
         BackgroundColor3 = Theme.Panel,
         Parent = container,
     })
@@ -150,7 +150,6 @@ function Library:Notify(cfg)
 
     local content = create("TextLabel", {
         Size = UDim2.new(1, 0, 0, 16),
-        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Text = cfg.Content or "",
         TextColor3 = Theme.TextDark,
@@ -161,9 +160,7 @@ function Library:Notify(cfg)
         Parent = notif,
     })
 
-    notif.Size = UDim2.new(1, 0, 0, 0)
     notif.Position = UDim2.new(1, 20, 0, 0)
-    notif.AnchorPoint = Vector2.new(0, 0)
     tween(notif, 0.25, { Position = UDim2.new(0, 0, 0, 0) })
 
     task.delay(cfg.Duration or 3, function()
