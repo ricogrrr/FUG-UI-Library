@@ -343,14 +343,30 @@ function library:CreatePage(Properties)
 		})
 		--
 		task.spawn(function()
-			for _ = 1, 12 do
-				if Page_Tab_Image.IsLoaded then
-					return
-				end
-				task.wait(0.5)
+			if Page_Tab_Image.IsLoaded then
+				return
 			end
 			--
-			Page_Tab_Image.Image = "rbxassetid://8547269749"
+			local Done = false
+			--
+			task.delay(1, function()
+				if not Done and not Page_Tab_Image.IsLoaded then
+					Done = true
+					Page_Tab_Image.Image = "rbxassetid://8547269749"
+				end
+			end)
+			--
+			pcall(function()
+				game:GetService("ContentProvider"):PreloadAsync({Page_Tab_Image})
+			end)
+			--
+			if not Done then
+				Done = true
+				--
+				if not Page_Tab_Image.IsLoaded then
+					Page_Tab_Image.Image = "rbxassetid://8547269749"
+				end
+			end
 		end)
 		--
 		local Page_Tab_Button = utility:RenderObject("TextButton", {
