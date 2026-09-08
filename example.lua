@@ -1,7 +1,7 @@
 -- Example usage of FUG UI Library
 -- Run this script in your executor, not main.lua directly.
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/dist/Library.luau"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"))()
 
 -- Optional: customize theme
 Library:SetTheme({
@@ -16,12 +16,13 @@ local Window = Library:CreateWindow({
     ToggleKey = Enum.KeyCode.RightControl,
 })
 
-local Tab = Window:CreateTab("Main")
+local Tab = Window:CreateTab("Main", "rbxassetid://6035024691") -- Tab with icon
 
 Tab:CreateSection("Components")
 
 Tab:CreateButton({
     Name = "Print Hello",
+    Icon = "rbxassetid://6035024691", -- Button with icon
     Callback = function()
         print("Hello!")
         Library:Notify({ Title = "Success", Content = "Button activated!", Duration = 3 })
@@ -65,7 +66,7 @@ Tab:CreateTextbox({
 
 Tab:CreateLabel("This is a label.")
 
-local Tab2 = Window:CreateTab("Settings")
+local Tab2 = Window:CreateTab("Settings", "rbxassetid://6034455061") -- Tab with icon
 Tab2:CreateButton({
     Name = "Destroy UI",
     Callback = function()

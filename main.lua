@@ -393,13 +393,13 @@ function Library:CreateWindow(cfg)
 
     local WindowObj = {}
 
-    function WindowObj:CreateTab(name)
+    function WindowObj:CreateTab(name, icon)
         tabCount = tabCount + 1
         local tabBtn = create("TextButton", {
             Size = UDim2.new(1, 0, 0, 30),
             BackgroundColor3 = Theme.PanelLight,
             BackgroundTransparency = 1,
-            Text = name,
+            Text = icon and ("  " .. name) or name,
             TextColor3 = Theme.TextDark,
             Font = Theme.Font,
             TextSize = 13,
@@ -407,6 +407,33 @@ function Library:CreateWindow(cfg)
             Parent = tabList,
         })
         round(tabBtn, 6)
+
+        local tabIcon
+        if icon then
+            tabIcon = create("ImageLabel", {
+                Size = UDim2.new(0, 16, 0, 16),
+                Position = UDim2.new(0, 8, 0.5, -8),
+                BackgroundTransparency = 1,
+                Image = icon,
+                Parent = tabBtn,
+            })
+            tabBtn.TextXAlignment = Enum.TextXAlignment.Left
+            -- Adjust text position to leave room for icon
+            local tabLabel = create("TextLabel", {
+                Size = UDim2.new(1, -34, 1, 0),
+                Position = UDim2.new(0, 30, 0, 0),
+                BackgroundTransparency = 1,
+                Text = name,
+                TextColor3 = Theme.TextDark,
+                Font = Theme.Font,
+                TextSize = 13,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = tabBtn,
+            })
+            tabBtn.Text = ""
+            -- Update selectTab to use tabLabel instead of tabBtn for text color
+            tabBtn:SetAttribute("TabLabel", tabLabel)
+        end
 
         local page = create("ScrollingFrame", {
             Name = name .. "Page",
@@ -426,14 +453,24 @@ function Library:CreateWindow(cfg)
         })
         padding(page, 4)
 
+        local tabLabel = tabBtn:GetAttribute("TabLabel")
         local function selectTab()
             for _, t in ipairs(tabs) do
                 t.button.BackgroundTransparency = 1
-                t.button.TextColor3 = Theme.TextDark
+                local tl = t.button:GetAttribute("TabLabel")
+                if tl then
+                    tl.TextColor3 = Theme.TextDark
+                else
+                    t.button.TextColor3 = Theme.TextDark
+                end
                 t.page.Visible = false
             end
             tween(tabBtn, 0.15, { BackgroundTransparency = 0, BackgroundColor3 = Theme.Accent })
-            tabBtn.TextColor3 = Theme.Text
+            if tabLabel then
+                tabLabel.TextColor3 = Theme.Text
+            else
+                tabBtn.TextColor3 = Theme.Text
+            end
             page.Visible = true
         end
 
@@ -487,10 +524,11 @@ function Library:CreateWindow(cfg)
 
         function Tab:CreateButton(cfg)
             cfg = cfg or {}
+            local hasIcon = cfg.Icon ~= nil
             local btn = create("TextButton", {
                 Size = UDim2.new(1, 0, 0, 32),
                 BackgroundColor3 = Theme.PanelLight,
-                Text = cfg.Name or "Button",
+                Text = hasIcon and "" or (cfg.Name or "Button"),
                 TextColor3 = Theme.Text,
                 Font = Theme.Font,
                 TextSize = 13,
@@ -498,6 +536,28 @@ function Library:CreateWindow(cfg)
                 Parent = page,
             })
             round(btn, 6)
+
+            local btnLabel
+            if hasIcon then
+                create("ImageLabel", {
+                    Size = UDim2.new(0, 16, 0, 16),
+                    Position = UDim2.new(0, 8, 0.5, -8),
+                    BackgroundTransparency = 1,
+                    Image = cfg.Icon,
+                    Parent = btn,
+                })
+                btnLabel = create("TextLabel", {
+                    Size = UDim2.new(1, -34, 1, 0),
+                    Position = UDim2.new(0, 30, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = cfg.Name or "Button",
+                    TextColor3 = Theme.Text,
+                    Font = Theme.Font,
+                    TextSize = 13,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = btn,
+                })
+            end
             local callback = cfg.Callback or function() end
             track(btn.MouseButton1Click:Connect(function()
                 callback()
@@ -510,7 +570,13 @@ function Library:CreateWindow(cfg)
             end))
             return {
                 SetCallback = function(_, cb) callback = cb end,
-                SetName = function(_, n) btn.Text = n end,
+                SetName = function(_, n)
+                    if btnLabel then
+                        btnLabel.Text = n
+                    else
+                        btn.Text = n
+                    end
+                end,
             }
         end
 
