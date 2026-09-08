@@ -1,26 +1,18 @@
--- FUG UI Library — polished example
+-- FUG UI Library — example
 -- Run this script in your executor, not main.lua directly.
 
 local Library = loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"
 ))()
 
-Library:SetTheme({
-    Accent = Color3.fromRGB(124, 92, 255),
-    AccentHover = Color3.fromRGB(145, 118, 255),
-    Background = Color3.fromRGB(12, 12, 16),
-    Panel = Color3.fromRGB(18, 18, 23),
-    PanelLight = Color3.fromRGB(24, 24, 30),
-    PanelHover = Color3.fromRGB(31, 31, 39),
-    Text = Color3.fromRGB(245, 245, 248),
-    TextDark = Color3.fromRGB(145, 145, 158),
-    Border = Color3.fromRGB(45, 45, 54),
-})
+-- Theme is already set to the v2 defaults in main.lua.
+-- Only call SetTheme if you want to override the accent for a specific hub.
+-- Library:SetTheme({ Accent = Color3.fromRGB(80, 200, 120) })
 
 local Window = Library:CreateWindow({
     Title = "Example Hub",
-    Subtitle = "FUG UI • Clean Edition",
-    Size = UDim2.fromOffset(700, 460),
+    Subtitle = "FUG UI v2",
+    Size = UDim2.fromOffset(560, 380),
     ToggleKey = Enum.KeyCode.RightControl,
 })
 
@@ -80,7 +72,7 @@ Main:CreateTextbox({
     end,
 })
 
-Main:CreateLabel("Everything is spaced into compact cards so the page stays readable without feeling crowded.")
+Main:CreateLabel("Numeric readouts use a mono font and a single accent color — everything else stays neutral so state actually stands out.")
 
 local Settings = Window:CreateTab("Settings", "rbxassetid://6034455061")
 
