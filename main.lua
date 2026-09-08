@@ -15,18 +15,21 @@ local Players = game:GetService("Players")
 
 --| Theme |--
 local Theme = {
-    Accent = Color3.fromRGB(120, 80, 255),
-    AccentHover = Color3.fromRGB(140, 100, 255),
-    Background = Color3.fromRGB(20, 20, 25),
-    Panel = Color3.fromRGB(30, 30, 35),
-    PanelLight = Color3.fromRGB(40, 40, 45),
-    Text = Color3.fromRGB(255, 255, 255),
-    TextDark = Color3.fromRGB(160, 160, 170),
-    Border = Color3.fromRGB(50, 50, 55),
-    Success = Color3.fromRGB(80, 200, 120),
-    Warning = Color3.fromRGB(240, 180, 60),
-    Error = Color3.fromRGB(230, 80, 80),
-    CornerRadius = UDim.new(0, 6),
+    -- Deep navy surfaces keep the UI calm while the violet accent adds hierarchy.
+    Accent = Color3.fromRGB(139, 92, 246),
+    AccentHover = Color3.fromRGB(167, 139, 250),
+    AccentSoft = Color3.fromRGB(61, 42, 112),
+    Background = Color3.fromRGB(11, 15, 28),
+    Panel = Color3.fromRGB(18, 24, 41),
+    PanelLight = Color3.fromRGB(27, 35, 57),
+    PanelHover = Color3.fromRGB(36, 46, 73),
+    Text = Color3.fromRGB(244, 247, 255),
+    TextDark = Color3.fromRGB(150, 161, 185),
+    Border = Color3.fromRGB(52, 65, 94),
+    Success = Color3.fromRGB(52, 211, 153),
+    Warning = Color3.fromRGB(251, 191, 36),
+    Error = Color3.fromRGB(248, 113, 113),
+    CornerRadius = UDim.new(0, 9),
     Font = Enum.Font.Gotham,
     FontBold = Enum.Font.GothamBold,
 }
@@ -120,16 +123,18 @@ end
 function Library:Notify(cfg)
     cfg = cfg or {}
     local container = ensureNotifyFolder()
-    local notifHeight = 56
     local notif = create("Frame", {
         Name = "Notification",
-        Size = UDim2.new(1, 0, 0, notifHeight),
+        Size = UDim2.new(1, 0, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = Theme.Panel,
         Parent = container,
     })
-    round(notif, 6)
-    stroke(notif)
-    padding(notif, 10)
+    round(notif, 9)
+    stroke(notif, Theme.Border, 1)
+    padding(notif, 12)
+    create("Frame", { Size = UDim2.new(0, 3, 1, -16), Position = UDim2.new(0, 0, 0, 8), BackgroundColor3 = Theme.Accent, BorderSizePixel = 0, Parent = notif })
+    round(notif, 9)
 
     local layout = create("UIListLayout", {
         Padding = UDim.new(0, 4),
@@ -150,6 +155,7 @@ function Library:Notify(cfg)
 
     local content = create("TextLabel", {
         Size = UDim2.new(1, 0, 0, 16),
+        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Text = cfg.Content or "",
         TextColor3 = Theme.TextDark,
@@ -160,7 +166,9 @@ function Library:Notify(cfg)
         Parent = notif,
     })
 
+    notif.Size = UDim2.new(1, 0, 0, 0)
     notif.Position = UDim2.new(1, 20, 0, 0)
+    notif.AnchorPoint = Vector2.new(0, 0)
     tween(notif, 0.25, { Position = UDim2.new(0, 0, 0, 0) })
 
     task.delay(cfg.Duration or 3, function()
@@ -190,11 +198,12 @@ function Library:CreateWindow(cfg)
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = size,
         BackgroundColor3 = Theme.Background,
+        ClipsDescendants = false,
         Active = true,
         Draggable = false,
         Parent = sg,
     })
-    round(Window, 8)
+    round(Window, 12)
     stroke(Window, Theme.Border, 1)
 
     -- Shadow
@@ -206,7 +215,7 @@ function Library:CreateWindow(cfg)
         BackgroundTransparency = 1,
         Image = "rbxassetid://1316045217",
         ImageColor3 = Color3.new(0, 0, 0),
-        ImageTransparency = 0.5,
+        ImageTransparency = 0.62,
         ZIndex = -1,
         Parent = Window,
     })
@@ -214,11 +223,11 @@ function Library:CreateWindow(cfg)
     -- Title bar
     local titleBar = create("Frame", {
         Name = "TitleBar",
-        Size = UDim2.new(1, 0, 0, 38),
+        Size = UDim2.new(1, 0, 0, 46),
         BackgroundColor3 = Theme.Panel,
         Parent = Window,
     })
-    round(titleBar, 8)
+    round(titleBar, 12)
 
     -- Cover bottom corners of title bar
     create("Frame", {
@@ -230,8 +239,8 @@ function Library:CreateWindow(cfg)
     })
 
     local titleLabel = create("TextLabel", {
-        Size = UDim2.new(1, -80, 1, 0),
-        Position = UDim2.new(0, 14, 0, 0),
+        Size = UDim2.new(1, -118, 1, 0),
+        Position = UDim2.new(0, 18, 0, 0),
         BackgroundTransparency = 1,
         Text = title,
         TextColor3 = Theme.Text,
@@ -239,14 +248,16 @@ function Library:CreateWindow(cfg)
         TextSize = 15,
         TextXAlignment = Enum.TextXAlignment.Left,
         Parent = titleBar,
+        TextTruncate = Enum.TextTruncate.AtEnd,
     })
 
     -- Close button
     local closeBtn = create("TextButton", {
-        Size = UDim2.new(0, 28, 0, 28),
-        Position = UDim2.new(1, -34, 0, 5),
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -38, 0, 8),
         BackgroundColor3 = Theme.PanelLight,
         Text = "",
+        AutoButtonColor = false,
         Parent = titleBar,
     })
     round(closeBtn, 6)
@@ -262,10 +273,11 @@ function Library:CreateWindow(cfg)
 
     -- Minimize button
     local minBtn = create("TextButton", {
-        Size = UDim2.new(0, 28, 0, 28),
-        Position = UDim2.new(1, -66, 0, 5),
+        Size = UDim2.new(0, 30, 0, 30),
+        Position = UDim2.new(1, -74, 0, 8),
         BackgroundColor3 = Theme.PanelLight,
         Text = "",
+        AutoButtonColor = false,
         Parent = titleBar,
     })
     round(minBtn, 6)
@@ -279,11 +291,20 @@ function Library:CreateWindow(cfg)
         Parent = minBtn,
     })
 
+    create("Frame", {
+        Name = "AccentRule",
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0, 0, 1, -2),
+        BackgroundColor3 = Theme.Accent,
+        BorderSizePixel = 0,
+        Parent = titleBar,
+    })
+
     -- Tab bar (left sidebar)
     local sideBar = create("Frame", {
         Name = "SideBar",
-        Size = UDim2.new(0, 130, 1, -38),
-        Position = UDim2.new(0, 0, 0, 38),
+        Size = UDim2.new(0, 146, 1, -46),
+        Position = UDim2.new(0, 0, 0, 46),
         BackgroundColor3 = Theme.Panel,
         BorderSizePixel = 0,
         Parent = Window,
@@ -297,7 +318,7 @@ function Library:CreateWindow(cfg)
         Parent = sideBar,
     })
     local tabLayout = create("UIListLayout", {
-        Padding = UDim.new(0, 4),
+        Padding = UDim.new(0, 6),
         SortOrder = Enum.SortOrder.LayoutOrder,
         Parent = tabList,
     })
@@ -306,8 +327,8 @@ function Library:CreateWindow(cfg)
     -- Content area
     local contentArea = create("Frame", {
         Name = "ContentArea",
-        Size = UDim2.new(1, -130, 1, -38),
-        Position = UDim2.new(0, 130, 0, 38),
+        Size = UDim2.new(1, -146, 1, -46),
+        Position = UDim2.new(0, 146, 0, 46),
         BackgroundTransparency = 1,
         Parent = Window,
     })
@@ -316,8 +337,8 @@ function Library:CreateWindow(cfg)
     local minimized = false
     local contentHolder = create("Frame", {
         Name = "ContentHolder",
-        Size = UDim2.new(1, -10, 1, -10),
-        Position = UDim2.new(0, 5, 0, 5),
+        Size = UDim2.new(1, -18, 1, -18),
+        Position = UDim2.new(0, 9, 0, 9),
         BackgroundTransparency = 1,
         Parent = contentArea,
     })
@@ -345,7 +366,7 @@ function Library:CreateWindow(cfg)
 
     --| Close |--
     track(closeBtn.MouseButton1Click:Connect(function()
-        tween(Window, 0.2, { Size = UDim2.new(0, 0, 0, 0), Transparency = 1 })
+        tween(Window, 0.2, { Size = UDim2.new(0, 0, 0, 0) })
         task.wait(0.2)
         sg:Destroy()
         for i, c in ipairs(Connections) do c:Disconnect() end
@@ -355,12 +376,12 @@ function Library:CreateWindow(cfg)
     track(minBtn.MouseButton1Click:Connect(function()
         minimized = not minimized
         if minimized then
-            tween(contentArea, 0.2, { Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0, 130, 0, 38) })
-            tween(sideBar, 0.2, { Size = UDim2.new(0, 130, 0, 0) })
-            tween(Window, 0.2, { Size = UDim2.new(size.X.Scale, size.X.Offset, 0, 38) })
+            tween(contentArea, 0.2, { Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0, 146, 0, 46) })
+            tween(sideBar, 0.2, { Size = UDim2.new(0, 146, 0, 0) })
+            tween(Window, 0.2, { Size = UDim2.new(size.X.Scale, size.X.Offset, 0, 46) })
         else
-            tween(contentArea, 0.2, { Size = UDim2.new(1, -130, 1, -38), Position = UDim2.new(0, 130, 0, 38) })
-            tween(sideBar, 0.2, { Size = UDim2.new(0, 130, 1, -38) })
+            tween(contentArea, 0.2, { Size = UDim2.new(1, -146, 1, -46), Position = UDim2.new(0, 146, 0, 46) })
+            tween(sideBar, 0.2, { Size = UDim2.new(0, 146, 1, -46) })
             tween(Window, 0.2, { Size = size })
         end
     end))
@@ -377,7 +398,7 @@ function Library:CreateWindow(cfg)
     --| Hover effects |--
     for _, btn in ipairs({ closeBtn, minBtn }) do
         track(btn.MouseEnter:Connect(function()
-            tween(btn, 0.15, { BackgroundColor3 = Theme.Accent })
+            tween(btn, 0.15, { BackgroundColor3 = Theme.PanelHover })
         end))
         track(btn.MouseLeave:Connect(function()
             tween(btn, 0.15, { BackgroundColor3 = Theme.PanelLight })
@@ -394,7 +415,7 @@ function Library:CreateWindow(cfg)
     function WindowObj:CreateTab(name, icon)
         tabCount = tabCount + 1
         local tabBtn = create("TextButton", {
-            Size = UDim2.new(1, 0, 0, 30),
+            Size = UDim2.new(1, 0, 0, 36),
             BackgroundColor3 = Theme.PanelLight,
             BackgroundTransparency = 1,
             Text = icon and ("  " .. name) or name,
@@ -404,13 +425,13 @@ function Library:CreateWindow(cfg)
             AutoButtonColor = false,
             Parent = tabList,
         })
-        round(tabBtn, 6)
+        round(tabBtn, 8)
 
         local tabIcon
         local tabLabel
         if icon then
             tabIcon = create("ImageLabel", {
-                Size = UDim2.new(0, 16, 0, 16),
+                Size = UDim2.new(0, 18, 0, 18),
                 Position = UDim2.new(0, 8, 0.5, -8),
                 BackgroundTransparency = 1,
                 Image = icon,
@@ -448,7 +469,7 @@ function Library:CreateWindow(cfg)
             SortOrder = Enum.SortOrder.LayoutOrder,
             Parent = page,
         })
-        padding(page, 4)
+        padding(page, 2)
 
         -- Manual canvas size tracking (replaces AutomaticCanvasSize for compatibility)
         track(pageLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -527,7 +548,7 @@ function Library:CreateWindow(cfg)
             cfg = cfg or {}
             local hasIcon = cfg.Icon ~= nil
             local btn = create("TextButton", {
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(1, 0, 0, 38),
                 BackgroundColor3 = Theme.PanelLight,
                 Text = hasIcon and "" or (cfg.Name or "Button"),
                 TextColor3 = Theme.Text,
@@ -536,12 +557,12 @@ function Library:CreateWindow(cfg)
                 AutoButtonColor = false,
                 Parent = page,
             })
-            round(btn, 6)
+            round(btn, 8)
 
             local btnLabel
             if hasIcon then
                 create("ImageLabel", {
-                    Size = UDim2.new(0, 16, 0, 16),
+                    Size = UDim2.new(0, 18, 0, 18),
                     Position = UDim2.new(0, 8, 0.5, -8),
                     BackgroundTransparency = 1,
                     Image = cfg.Icon,
@@ -564,7 +585,7 @@ function Library:CreateWindow(cfg)
                 callback()
             end))
             track(btn.MouseEnter:Connect(function()
-                tween(btn, 0.15, { BackgroundColor3 = Theme.Accent })
+                tween(btn, 0.15, { BackgroundColor3 = Theme.PanelHover })
             end))
             track(btn.MouseLeave:Connect(function()
                 tween(btn, 0.15, { BackgroundColor3 = Theme.PanelLight })
@@ -587,11 +608,11 @@ function Library:CreateWindow(cfg)
             local callback = cfg.Callback or function() end
 
             local frame = create("Frame", {
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(1, 0, 0, 38),
                 BackgroundColor3 = Theme.PanelLight,
                 Parent = page,
             })
-            round(frame, 6)
+            round(frame, 8)
 
             local label = create("TextLabel", {
                 Size = UDim2.new(1, -50, 1, 0),
@@ -606,33 +627,33 @@ function Library:CreateWindow(cfg)
             })
 
             local knob = create("Frame", {
-                Size = UDim2.new(0, 40, 0, 20),
-                Position = UDim2.new(1, -48, 0.5, -10),
+                Size = UDim2.new(0, 44, 0, 22),
+                Position = UDim2.new(1, -54, 0.5, -11),
                 BackgroundColor3 = value and Theme.Accent or Theme.Border,
                 Parent = frame,
             })
             round(knob, 10)
 
             local circle = create("Frame", {
-                Size = UDim2.new(0, 16, 0, 16),
-                Position = UDim2.new(value and 1 or 0, value and -18 or 2, 0.5, -8),
+                Size = UDim2.new(0, 18, 0, 18),
+                Position = UDim2.new(value and 1 or 0, value and -20 or 2, 0.5, -9),
                 BackgroundColor3 = Theme.Text,
                 Parent = knob,
             })
-            round(circle, 8)
+            round(circle, 9)
 
             local function update(animate)
                 if animate then
                     tween(knob, 0.15, { BackgroundColor3 = value and Theme.Accent or Theme.Border })
-                    tween(circle, 0.15, { Position = UDim2.new(value and 1 or 0, value and -18 or 2, 0.5, -8) })
+                    tween(circle, 0.15, { Position = UDim2.new(value and 1 or 0, value and -20 or 2, 0.5, -9) })
                 else
                     knob.BackgroundColor3 = value and Theme.Accent or Theme.Border
-                    circle.Position = UDim2.new(value and 1 or 0, value and -18 or 2, 0.5, -8)
+                    circle.Position = UDim2.new(value and 1 or 0, value and -20 or 2, 0.5, -9)
                 end
             end
 
             track(frame.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     value = not value
                     update(true)
                     callback(value)
@@ -650,15 +671,15 @@ function Library:CreateWindow(cfg)
             cfg = cfg or {}
             local min = cfg.Min or 0
             local max = cfg.Max or 100
-            local value = cfg.Default or min
+            local value = math.clamp(cfg.Default or min, min, max)
             local callback = cfg.Callback or function() end
 
             local frame = create("Frame", {
-                Size = UDim2.new(1, 0, 0, 44),
+                Size = UDim2.new(1, 0, 0, 56),
                 BackgroundColor3 = Theme.PanelLight,
                 Parent = page,
             })
-            round(frame, 6)
+            round(frame, 8)
 
             local label = create("TextLabel", {
                 Size = UDim2.new(1, -60, 0, 20),
@@ -674,7 +695,7 @@ function Library:CreateWindow(cfg)
 
             local valLabel = create("TextLabel", {
                 Size = UDim2.new(0, 50, 0, 20),
-                Position = UDim2.new(1, -58, 0, 4),
+                Position = UDim2.new(1, -68, 0, 7),
                 BackgroundTransparency = 1,
                 Text = tostring(value),
                 TextColor3 = Theme.Accent,
@@ -685,8 +706,8 @@ function Library:CreateWindow(cfg)
             })
 
             local track_ = create("Frame", {
-                Size = UDim2.new(1, -20, 0, 6),
-                Position = UDim2.new(0, 10, 0, 30),
+                Size = UDim2.new(1, -20, 0, 7),
+                Position = UDim2.new(0, 10, 0, 39),
                 BackgroundColor3 = Theme.Border,
                 Parent = frame,
             })
@@ -700,8 +721,8 @@ function Library:CreateWindow(cfg)
             round(fill, 3)
 
             local knob = create("Frame", {
-                Size = UDim2.new(0, 14, 0, 14),
-                Position = UDim2.new((value - min) / (max - min), -7, 0.5, -7),
+                Size = UDim2.new(0, 16, 0, 16),
+                Position = UDim2.new((value - min) / (max - min), -7, 0.5, -8),
                 BackgroundColor3 = Theme.Text,
                 Parent = track_,
             })
@@ -709,21 +730,21 @@ function Library:CreateWindow(cfg)
 
             local dragging2 = false
             local function update()
-                local pct = (value - min) / (max - min)
+                local pct = (max == min) and 0 or (value - min) / (max - min)
                 fill.Size = UDim2.new(pct, 0, 1, 0)
-                knob.Position = UDim2.new(pct, -7, 0.5, -7)
+                knob.Position = UDim2.new(pct, -7, 0.5, -8)
                 valLabel.Text = tostring(value)
             end
 
             local function onInput(input)
                 local pct = math.clamp((input.Position.X - track_.AbsolutePosition.X) / track_.AbsoluteSize.X, 0, 1)
-                value = math.floor(min + pct * (max - min))
+                value = (max == min) and min or math.floor(min + pct * (max - min))
                 update()
                 callback(value)
             end
 
             track(track_.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging2 = true
                     onInput(input)
                 end
@@ -734,7 +755,7 @@ function Library:CreateWindow(cfg)
                 end
             end))
             track(UserInputService.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                     dragging2 = false
                 end
             end))
@@ -753,11 +774,11 @@ function Library:CreateWindow(cfg)
             local callback = cfg.Callback or function() end
 
             local frame = create("Frame", {
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(1, 0, 0, 38),
                 BackgroundColor3 = Theme.PanelLight,
                 Parent = page,
             })
-            round(frame, 6)
+            round(frame, 8)
 
             local label = create("TextLabel", {
                 Size = UDim2.new(1, -30, 1, 0),
@@ -775,7 +796,7 @@ function Library:CreateWindow(cfg)
                 Size = UDim2.new(0, 20, 1, 0),
                 Position = UDim2.new(1, -25, 0, 0),
                 BackgroundTransparency = 1,
-                Text = "v",
+                Text = "⌄",
                 TextColor3 = Theme.TextDark,
                 Font = Theme.FontBold,
                 TextSize = 12,
@@ -788,6 +809,7 @@ function Library:CreateWindow(cfg)
                 Position = UDim2.new(0, 0, 1, 2),
                 BackgroundColor3 = Theme.Panel,
                 Visible = false,
+                ClipsDescendants = true,
                 ZIndex = 10,
                 Parent = frame,
             })
@@ -823,7 +845,7 @@ function Library:CreateWindow(cfg)
                         callback(opt)
                         expanded = false
                         list.Visible = false
-                        arrow.Text = "v"
+                        arrow.Text = "⌄"
                         buildOptions()
                     end))
                     table.insert(optionBtns, ob)
@@ -834,7 +856,7 @@ function Library:CreateWindow(cfg)
             track(frame.MouseButton1Click:Connect(function()
                 expanded = not expanded
                 list.Visible = expanded
-                arrow.Text = expanded and "^" or "v"
+                arrow.Text = expanded and "⌃" or "⌄"
             end))
 
             return {
@@ -866,11 +888,11 @@ function Library:CreateWindow(cfg)
             local callback = cfg.Callback or function() end
 
             local frame = create("Frame", {
-                Size = UDim2.new(1, 0, 0, 32),
+                Size = UDim2.new(1, 0, 0, 38),
                 BackgroundColor3 = Theme.PanelLight,
                 Parent = page,
             })
-            round(frame, 6)
+            round(frame, 8)
 
             local label = create("TextLabel", {
                 Size = UDim2.new(0, 80, 1, 0),
@@ -885,8 +907,8 @@ function Library:CreateWindow(cfg)
             })
 
             local box = create("TextBox", {
-                Size = UDim2.new(1, -100, 0, 24),
-                Position = UDim2.new(0, 90, 0.5, -12),
+                Size = UDim2.new(1, -108, 0, 28),
+                Position = UDim2.new(0, 98, 0.5, -14),
                 BackgroundColor3 = Theme.Background,
                 Text = "",
                 PlaceholderText = cfg.Placeholder or "",
@@ -897,7 +919,8 @@ function Library:CreateWindow(cfg)
                 ClearTextOnFocus = false,
                 Parent = frame,
             })
-            round(box, 4)
+            round(box, 6)
+            stroke(box, Theme.Border, 1)
 
             track(box.FocusLost:Connect(function(enter)
                 callback(box.Text)
