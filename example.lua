@@ -1,35 +1,47 @@
--- Example usage of FUG UI Library
+-- FUG UI Library — polished example
 -- Run this script in your executor, not main.lua directly.
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"))()
+local Library = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"
+))()
 
--- Optional: customize theme
 Library:SetTheme({
-    Accent = Color3.fromRGB(120, 80, 255),
-    Background = Color3.fromRGB(20, 20, 25),
-    Text = Color3.fromRGB(255, 255, 255),
+    Accent = Color3.fromRGB(124, 92, 255),
+    AccentHover = Color3.fromRGB(145, 118, 255),
+    Background = Color3.fromRGB(12, 12, 16),
+    Panel = Color3.fromRGB(18, 18, 23),
+    PanelLight = Color3.fromRGB(24, 24, 30),
+    PanelHover = Color3.fromRGB(31, 31, 39),
+    Text = Color3.fromRGB(245, 245, 248),
+    TextDark = Color3.fromRGB(145, 145, 158),
+    Border = Color3.fromRGB(45, 45, 54),
 })
 
 local Window = Library:CreateWindow({
     Title = "Example Hub",
-    Size = UDim2.fromOffset(550, 400),
+    Subtitle = "FUG UI • Clean Edition",
+    Size = UDim2.fromOffset(700, 460),
     ToggleKey = Enum.KeyCode.RightControl,
 })
 
-local Tab = Window:CreateTab("Main", "rbxassetid://6035024691") -- Tab with icon
+local Main = Window:CreateTab("Overview", "rbxassetid://6035024691")
 
-Tab:CreateSection("Components")
+Main:CreateSection("Quick actions")
 
-Tab:CreateButton({
+Main:CreateButton({
     Name = "Print Hello",
-    Icon = "rbxassetid://6035024691", -- Button with icon
+    Icon = "rbxassetid://6035024691",
     Callback = function()
         print("Hello!")
-        Library:Notify({ Title = "Success", Content = "Button activated!", Duration = 3 })
+        Library:Notify({
+            Title = "Action complete",
+            Content = "The button was activated successfully.",
+            Duration = 3,
+        })
     end,
 })
 
-local Toggle = Tab:CreateToggle({
+Main:CreateToggle({
     Name = "Example Toggle",
     Default = false,
     Callback = function(value)
@@ -37,7 +49,9 @@ local Toggle = Tab:CreateToggle({
     end,
 })
 
-Tab:CreateSlider({
+Main:CreateSection("Movement")
+
+Main:CreateSlider({
     Name = "WalkSpeed",
     Min = 0,
     Max = 100,
@@ -47,8 +61,8 @@ Tab:CreateSlider({
     end,
 })
 
-Tab:CreateDropdown({
-    Name = "Options",
+Main:CreateDropdown({
+    Name = "Mode",
     Options = { "Option 1", "Option 2", "Option 3" },
     Default = "Option 1",
     Callback = function(value)
@@ -56,7 +70,9 @@ Tab:CreateDropdown({
     end,
 })
 
-Tab:CreateTextbox({
+Main:CreateSection("Input")
+
+Main:CreateTextbox({
     Name = "Username",
     Placeholder = "Enter username...",
     Callback = function(value)
@@ -64,14 +80,25 @@ Tab:CreateTextbox({
     end,
 })
 
-Tab:CreateLabel("This is a label.")
+Main:CreateLabel("Everything is spaced into compact cards so the page stays readable without feeling crowded.")
 
-local Tab2 = Window:CreateTab("Settings", "rbxassetid://6034455061") -- Tab with icon
-Tab2:CreateButton({
+local Settings = Window:CreateTab("Settings", "rbxassetid://6034455061")
+
+Settings:CreateSection("Interface")
+
+Settings:CreateButton({
     Name = "Destroy UI",
     Callback = function()
-        Library:Notify({ Title = "Goodbye", Content = "Closing UI...", Duration = 2 })
+        Library:Notify({
+            Title = "Closing",
+            Content = "Goodbye.",
+            Duration = 2,
+        })
     end,
 })
 
-Library:Notify({ Title = "Loaded", Content = "FUG UI Library is ready!", Duration = 3 })
+Library:Notify({
+    Title = "Welcome",
+    Content = "Example Hub is ready.",
+    Duration = 3,
+})

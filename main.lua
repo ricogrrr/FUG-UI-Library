@@ -125,7 +125,8 @@ function Library:Notify(cfg)
     local container = ensureNotifyFolder()
     local notif = create("Frame", {
         Name = "Notification",
-        Size = UDim2.new(1, 0, 0, 64),
+        Size = UDim2.new(1, 0, 0, 0),
+        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundColor3 = Theme.Panel,
         Parent = container,
     })
@@ -140,18 +141,20 @@ function Library:Notify(cfg)
     })
 
     local title = create("TextLabel", {
-        Size = UDim2.new(1, 0, 0, 18),
+        Size = UDim2.new(1, -24, 0, 18),
         BackgroundTransparency = 1,
         Text = cfg.Title or "Notification",
         TextColor3 = Theme.Text,
         Font = Theme.FontBold,
         TextSize = 14,
         TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
         Parent = notif,
     })
 
     local content = create("TextLabel", {
-        Size = UDim2.new(1, 0, 0, 18),
+        Size = UDim2.new(1, -24, 0, 16),
+        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Text = cfg.Content or "",
         TextColor3 = Theme.TextDark,
@@ -163,7 +166,9 @@ function Library:Notify(cfg)
         Parent = notif,
     })
 
+    notif.Size = UDim2.new(1, 0, 0, 0)
     notif.Position = UDim2.new(1, 20, 0, 0)
+    notif.AnchorPoint = Vector2.new(0, 0)
     tween(notif, 0.25, { Position = UDim2.new(0, 0, 0, 0) })
 
     task.delay(cfg.Duration or 3, function()
