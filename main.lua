@@ -134,8 +134,7 @@ function Library:Notify(cfg)
 
     local notif = create("Frame", {
         Name = "Notification",
-        Size = UDim2.new(1, 0, 0, 0),
-        AutomaticSize = Enum.AutomaticSize.Y,
+        Size = UDim2.new(1, 0, 0, 58),
         BackgroundColor3 = Theme.Panel,
         Parent = container,
     })
@@ -174,7 +173,6 @@ function Library:Notify(cfg)
 
     create("TextLabel", {
         Size = UDim2.new(1, -20, 0, 14),
-        AutomaticSize = Enum.AutomaticSize.Y,
         BackgroundTransparency = 1,
         Text = cfg.Content or "",
         TextColor3 = Theme.TextDim,
