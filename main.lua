@@ -443,7 +443,6 @@ function Library:CreateWindow(cfg)
             ScrollBarThickness = 4,
             ScrollBarImageColor3 = Theme.Accent,
             CanvasSize = UDim2.new(0, 0, 0, 0),
-            AutomaticCanvasSize = Enum.AutomaticSize.Y,
             Visible = false,
             Parent = contentHolder,
         })
@@ -453,6 +452,11 @@ function Library:CreateWindow(cfg)
             Parent = page,
         })
         padding(page, 4)
+
+        -- Manual canvas size tracking (replaces AutomaticCanvasSize for compatibility)
+        track(pageLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            page.CanvasSize = UDim2.new(0, 0, 0, pageLayout.AbsoluteContentSize + 8)
+        end))
 
         local function selectTab()
             for _, t in ipairs(tabs) do
