@@ -1,96 +1,99 @@
--- FUG UI Library — example
--- Run this script in your executor, not main.lua directly.
+--[[
+	PuppyWare UI Library - Example
+	Upload main.lua to a GitHub repo (or any raw host) and replace the URL below,
+	then execute this file in your executor.
+]]
 
-local Library = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/ricogrrr/FUG-UI-Library/main/main.lua"
-))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/USER/REPO/main/main.lua"))()
 
--- Theme is already set to the v2 defaults in main.lua.
--- Only call SetTheme if you want to override the accent for a specific hub.
--- Library:SetTheme({ Accent = Color3.fromRGB(80, 200, 120) })
+-- [[ // Window // ]]
+local window = library:CreateWindow({Accent = Color3.fromRGB(255, 120, 30), Key = Enum.KeyCode.Z})
 
-local Window = Library:CreateWindow({
-    Title = "Example Hub",
-    Subtitle = "FUG UI v2",
-    Size = UDim2.fromOffset(560, 380),
-    ToggleKey = Enum.KeyCode.RightControl,
-})
+-- [[ // Pages // ]]
+local rage = window:CreatePage({Icon = "rbxassetid://8547236654"})
+local antiaim = window:CreatePage({Icon = "rbxassetid://8547310764"})
+local aimbot = window:CreatePage({Icon = "rbxassetid://8547249956"})
+local visuals = window:CreatePage({Icon = "rbxassetid://8547254518"})
+local setting = window:CreatePage({Icon = "rbxassetid://8547256547"})
+local skins = window:CreatePage({Icon = "rbxassetid://8547258459"})
+local config = window:CreatePage({Icon = "rbxassetid://8547269749"})
 
-local Main = Window:CreateTab("Overview", "rbxassetid://6035024691")
+-- [[ // Sections // ]]
+local playeresp = visuals:CreateSection({Name = "Player ESP", Size = 330, Side = "Left"})
+local coloredmodels = visuals:CreateSection({Name = "Colored models", Size = 158, Side = "Left"})
+local otheresp = visuals:CreateSection({Name = "Other ESP", Size = 200, Side = "Right"})
+local effects = visuals:CreateSection({Name = "Effects", Size = 288, Side = "Right"})
 
-Main:CreateSection("Quick actions")
-
-Main:CreateButton({
-    Name = "Print Hello",
-    Icon = "rbxassetid://6035024691",
-    Callback = function()
-        print("Hello!")
-        Library:Notify({
-            Title = "Action complete",
-            Content = "The button was activated successfully.",
-            Duration = 3,
-        })
-    end,
-})
-
-Main:CreateToggle({
-    Name = "Example Toggle",
-    Default = false,
-    Callback = function(value)
-        print("Toggle:", value)
-    end,
-})
-
-Main:CreateSection("Movement")
-
-Main:CreateSlider({
-    Name = "WalkSpeed",
-    Min = 0,
-    Max = 100,
-    Default = 16,
-    Callback = function(value)
-        print("WalkSpeed:", value)
-    end,
-})
-
-Main:CreateDropdown({
-    Name = "Mode",
-    Options = { "Option 1", "Option 2", "Option 3" },
-    Default = "Option 1",
-    Callback = function(value)
-        print("Selected:", value)
-    end,
-})
-
-Main:CreateSection("Input")
-
-Main:CreateTextbox({
-    Name = "Username",
-    Placeholder = "Enter username...",
-    Callback = function(value)
-        print("Username:", value)
-    end,
-})
-
-Main:CreateLabel("Numeric readouts use a mono font and a single accent color — everything else stays neutral so state actually stands out.")
-
-local Settings = Window:CreateTab("Settings", "rbxassetid://6034455061")
-
-Settings:CreateSection("Interface")
-
-Settings:CreateButton({
-    Name = "Destroy UI",
-    Callback = function()
-        Library:Notify({
-            Title = "Closing",
-            Content = "Goodbye.",
-            Duration = 2,
-        })
-    end,
-})
-
-Library:Notify({
-    Title = "Welcome",
-    Content = "Example Hub is ready.",
-    Duration = 3,
-})
+-- [[ // Content // ]]
+local keybn = playeresp:CreateKeybind({Name = "Activation Type"})
+playeresp:CreateToggle({Name = "Teammates", State = false})
+playeresp:CreateColorpicker({Name = "Visualize aimbot", State = Color3.fromRGB(255, 0, 0)})
+playeresp:CreateColorpicker({Name = "Bounding Box", State = Color3.fromRGB(50, 100, 200)})
+playeresp:CreateColorpicker({Name = "Glow", State = Color3.fromRGB(25, 180, 75)})
+playeresp:CreateToggle({Name = "Dormant", State = false})
+playeresp:CreateToggle({Name = "Bounding Box", State = true})
+playeresp:CreateToggle({Name = "Health Bar", State = true})
+playeresp:CreateToggle({Name = "Name", State = true})
+playeresp:CreateToggle({Name = "Flags", State = true})
+playeresp:CreateToggle({Name = "Weapon Text", State = false})
+playeresp:CreateToggle({Name = "Weapon Icon", State = false})
+playeresp:CreateToggle({Name = "Ammo", State = false})
+playeresp:CreateToggle({Name = "Distance", State = false})
+playeresp:CreateToggle({Name = "Glow", State = true})
+playeresp:CreateToggle({Name = "Hit Marker", State = true})
+playeresp:CreateToggle({Name = "Hit Marker Sound", State = true})
+playeresp:CreateToggle({Name = "Visualize sounds", State = true})
+playeresp:CreateToggle({Name = "Line of sight", State = false})
+playeresp:CreateToggle({Name = "Money", State = false})
+playeresp:CreateToggle({Name = "Skeleton", State = false})
+playeresp:CreateToggle({Name = "Out of FOV arrow", State = true})
+playeresp:CreateSlider({State = 12, Max = 30, Min = 1, Decimals = 1, Suffix = "px"})
+playeresp:CreateSlider({State = 100, Max = 100, Min = 1, Decimals = 1, Suffix = "%"})
+--
+coloredmodels:CreateToggle({Name = "Player", State = false})
+coloredmodels:CreateToggle({Name = "Player behind wall", State = false})
+coloredmodels:CreateToggle({Name = "Teammate", State = false})
+coloredmodels:CreateToggle({Name = "Teammate behind wall", State = false})
+coloredmodels:CreateToggle({Name = "Local player", State = false})
+coloredmodels:CreateToggle({Name = "Local player fake", State = false})
+coloredmodels:CreateToggle({Name = "Ragdolls", State = false})
+coloredmodels:CreateToggle({Name = "Hands", State = false})
+coloredmodels:CreateToggle({Name = "Weapon viewmodel", State = false})
+coloredmodels:CreateToggle({Name = "Disable model occlusion", State = false})
+coloredmodels:CreateToggle({Name = "Shadow", State = false})
+coloredmodels:CreateToggle({Name = "Props", State = false})
+--
+otheresp:CreateToggle({Name = "Radar", State = false})
+otheresp:CreateMultibox({Name = "Dropped weapons", State = {1, 3, 4}, Options = {"Icon", "Text", "Glow", "Ammo", "Distance"}})
+otheresp:CreateToggle({Name = "Grenades", State = false})
+otheresp:CreateToggle({Name = "Inaccuracy overlay", State = false})
+otheresp:CreateToggle({Name = "Recoil overlay", State = false})
+otheresp:CreateToggle({Name = "Crosshair", State = false})
+otheresp:CreateToggle({Name = "Bomb", State = false})
+otheresp:CreateToggle({Name = "Grenade trajectory", State = false})
+otheresp:CreateToggle({Name = "Grenade proximity warning", State = false})
+otheresp:CreateToggle({Name = "Spectators", State = false})
+otheresp:CreateToggle({Name = "Penetration reticle", State = false})
+otheresp:CreateToggle({Name = "Hostages", State = false})
+otheresp:CreateToggle({Name = "Shared esp", State = false})
+otheresp:CreateToggle({Name = "Upgrade tablet", State = false})
+otheresp:CreateToggle({Name = "Danger Zone items", State = false})
+--
+effects:CreateToggle({Name = "Remove flashbang effects", State = false})
+effects:CreateToggle({Name = "Remove smoke grenades", State = false})
+effects:CreateToggle({Name = "Remove fog", State = false})
+effects:CreateToggle({Name = "Remove grass", State = false})
+effects:CreateToggle({Name = "Remove skybox", State = false})
+effects:CreateDropdown({Name = "Visual Recoil Adjustment", State = 1, Options = {"Off", "Remove Shake", "Remove All"}})
+effects:CreateSlider({Name = "Transparent walls", State = 50, Max = 100, Min = 0, Decimals = 1, Suffix = "%"})
+effects:CreateSlider({Name = "Transparent props", State = 50, Max = 100, Min = 0, Decimals = 1, Suffix = "%"})
+effects:CreateDropdown({Name = "Brightness Adjustment", State = 1, Options = {"Off", "Night Mode", "Full Bright"}})
+effects:CreateToggle({Name = "Remove scope overlay", State = false})
+effects:CreateToggle({Name = "Instant scope", State = false})
+effects:CreateToggle({Name = "Disable post processing", State = false})
+effects:CreateToggle({Name = "Force third person (alive)", State = false})
+effects:CreateToggle({Name = "Force third person (dead)", State = false})
+effects:CreateToggle({Name = "Disable rendering of teamates", State = false})
+effects:CreateToggle({Name = "Bullet tracers", State = false})
+effects:CreateToggle({Name = "Bullet impacts", State = false})
+effects:CreateToggle({Name = "Override Skybox", State = false})
