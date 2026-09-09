@@ -2312,12 +2312,12 @@ do -- // Content
 						BorderSizePixel = 0,
 						Parent = Open_Outline_Frame,
 						Position = UDim2.new(0, 2, 1, -14),
-						Size = UDim2.new(0, 152, 0, 12),
+						Size = UDim2.new(0, 152, 0, 14),
 						ZIndex = 6
 					})
-					-- //
+					--
 					local ValSat_Picker_Color = utility:RenderObject("Frame", {
-						BackgroundColor3 = Color3.fromRGB(255, 12, 12),
+						BackgroundColor3 = Color3.fromRGB(255, 0, 0),
 						BackgroundTransparency = 0,
 						BorderColor3 = Color3.fromRGB(0, 0, 0),
 						BorderSizePixel = 0,
@@ -2326,6 +2326,113 @@ do -- // Content
 						Size = UDim2.new(1, -2, 1, -2),
 						ZIndex = 6
 					})
+					--
+					local ValSat_Gradient_White = utility:RenderObject("UIGradient", {
+						Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 255, 255)),
+						Transparency = NumberSequence.new(0, 1),
+						Rotation = 0,
+						Parent = ValSat_Picker_Color
+					})
+					--
+					local ValSat_Gradient_Black = utility:RenderObject("UIGradient", {
+						Color = ColorSequence.new(Color3.fromRGB(0, 0, 0), Color3.fromRGB(0, 0, 0)),
+						Transparency = NumberSequence.new(1, 0),
+						Rotation = 90,
+						Parent = ValSat_Picker_Color
+					})
+					--
+					local ValSat_Cursor = utility:RenderObject("Frame", {
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = ValSat_Picker_Color,
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = UDim2.new(1, 0, 0, 0),
+						Size = UDim2.new(0, 4, 0, 4),
+						ZIndex = 7
+					})
+					--
+					local ValSat_Cursor_Stroke = utility:RenderObject("UIStroke", {
+						Color = Color3.fromRGB(0, 0, 0),
+						Thickness = 1,
+						Parent = ValSat_Cursor
+					})
+					--
+					local ValSat_Button = utility:RenderObject("TextButton", {
+						BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = ValSat_Picker_Color,
+						Size = UDim2.new(1, 0, 1, 0),
+						Text = "",
+						ZIndex = 7
+					})
+					--
+					local Hue_Picker_Color = utility:RenderObject("Frame", {
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 0,
+						BorderSizePixel = 0,
+						Parent = Hue_Picker_Outline,
+						Position = UDim2.new(0, 1, 0, 1),
+						Size = UDim2.new(1, -2, 1, -2),
+						ZIndex = 6
+					})
+					--
+					local Hue_Picker_Gradient = utility:RenderObject("UIGradient", {
+						Color = ColorSequence.new({
+							ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+							ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
+							ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
+							ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+							ColorSequenceKeypoint.new(0.67, Color3.fromRGB(0, 0, 255)),
+							ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 0, 255)),
+							ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0))
+						}),
+						Rotation = 90,
+						Parent = Hue_Picker_Color
+					})
+					--
+					local Hue_Cursor = utility:RenderObject("Frame", {
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 1,
+						BorderColor3 = Color3.fromRGB(255, 255, 255),
+						Parent = Hue_Picker_Color,
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = UDim2.new(0.5, 0, 0, 0),
+						Size = UDim2.new(1, 0, 0, 3),
+						ZIndex = 7
+					})
+					--
+					local Hue_Button = utility:RenderObject("TextButton", {
+						BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Parent = Hue_Picker_Color,
+						Size = UDim2.new(1, 0, 1, 0),
+						Text = "",
+						ZIndex = 7
+					})
+					--
+					local Picker = {H = 0, S = 1, V = 1}
+					--
+					local function updatePicker()
+						local color = Color3.fromHSV(Picker.H, Picker.S, Picker.V)
+						ValSat_Picker_Color.BackgroundColor3 = Color3.fromHSV(Picker.H, 1, 1)
+						ValSat_Cursor.Position = UDim2.new(0, Picker.S * ValSat_Picker_Color.AbsoluteSize.X, 0, (1 - Picker.V) * ValSat_Picker_Color.AbsoluteSize.Y)
+						Hue_Cursor.Position = UDim2.new(0.5, 0, 0, Picker.H * Hue_Picker_Color.AbsoluteSize.Y)
+						Content:Set(color)
+					end
+					--
+					local function initFromColor(color)
+						local h, s, v = Color3.toHSV(color)
+						Picker.H = h
+						Picker.S = s
+						Picker.V = v
+						ValSat_Picker_Color.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+						ValSat_Cursor.Position = UDim2.new(0, s * ValSat_Picker_Color.AbsoluteSize.X, 0, (1 - v) * ValSat_Picker_Color.AbsoluteSize.Y)
+						Hue_Cursor.Position = UDim2.new(0.5, 0, 0, h * Hue_Picker_Color.AbsoluteSize.Y)
+					end
 					--
 					do -- // Functions
 						function Content.Content:Close()
@@ -2346,8 +2453,11 @@ do -- // Content
 						end
 						--
 						function Content.Content:Refresh(state)
+							initFromColor(state)
 						end
 					end
+					--
+					initFromColor(Content.State)
 					--
 					Content.Content.Open = true
 					Content.Section.Content = Content.Content
@@ -2366,11 +2476,49 @@ do -- // Content
 								end
 							end
 						end)
+						--
+						local ValSat_Dragging = false
+						local Hue_Dragging = false
+						--
+						utility:CreateConnection(ValSat_Button.MouseButton1Down, function()
+							ValSat_Dragging = true
+							local mouse = utility:MouseLocation()
+							Picker.S = math.clamp(mouse.X - ValSat_Picker_Color.AbsolutePosition.X, 0, ValSat_Picker_Color.AbsoluteSize.X) / ValSat_Picker_Color.AbsoluteSize.X
+							Picker.V = 1 - math.clamp(mouse.Y - ValSat_Picker_Color.AbsolutePosition.Y, 0, ValSat_Picker_Color.AbsoluteSize.Y) / ValSat_Picker_Color.AbsoluteSize.Y
+							updatePicker()
+						end)
+						--
+						utility:CreateConnection(Hue_Button.MouseButton1Down, function()
+							Hue_Dragging = true
+							local mouse = utility:MouseLocation()
+							Picker.H = math.clamp(mouse.Y - Hue_Picker_Color.AbsolutePosition.Y, 0, Hue_Picker_Color.AbsoluteSize.Y) / Hue_Picker_Color.AbsoluteSize.Y
+							updatePicker()
+						end)
+						--
+						utility:CreateConnection(uis.InputEnded, function(Input)
+							if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+								ValSat_Dragging = false
+								Hue_Dragging = false
+							end
+						end)
+						--
+						utility:CreateConnection(uis.InputChanged, function(Input)
+							if Input.UserInputType == Enum.UserInputType.MouseMovement then
+								if ValSat_Dragging then
+									local mouse = utility:MouseLocation()
+									Picker.S = math.clamp(mouse.X - ValSat_Picker_Color.AbsolutePosition.X, 0, ValSat_Picker_Color.AbsoluteSize.X) / ValSat_Picker_Color.AbsoluteSize.X
+									Picker.V = 1 - math.clamp(mouse.Y - ValSat_Picker_Color.AbsolutePosition.Y, 0, ValSat_Picker_Color.AbsoluteSize.Y) / ValSat_Picker_Color.AbsoluteSize.Y
+									updatePicker()
+								elseif Hue_Dragging then
+									local mouse = utility:MouseLocation()
+									Picker.H = math.clamp(mouse.Y - Hue_Picker_Color.AbsolutePosition.Y, 0, Hue_Picker_Color.AbsoluteSize.Y) / Hue_Picker_Color.AbsoluteSize.Y
+									updatePicker()
+								end
+							end
+						end)
 					end
 				end
-			end
-			--
-			do -- // Connections
+				--
 				utility:CreateConnection(Content_Holder_Button.MouseButton1Click, function(Input)
 					if Content.Content.Open then
 						Content.Section:CloseContent()
