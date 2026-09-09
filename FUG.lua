@@ -325,3 +325,293 @@ rage_fov:CreateColorpicker({
 		end
 	end
 })
+
+-- [[ // ESP Page // ]]
+local esp = window:CreatePage({Icon = "rbxassetid://8547236654"})
+
+local esp_main = esp:CreateSection({Name = "Corner ESP", Size = 200, Side = "Left"})
+local esp_color = esp:CreateSection({Name = "Colors", Size = 158, Side = "Right"})
+
+-- [[ // ESP Config // ]]
+local ESPConfig = {
+	Enabled = false,
+	TeamCheck = false,
+	TeamColor = false,
+	AutoThickness = true,
+	UseRainbow = false,
+	BoxThickness = 2,
+	BoxColor = Color3.fromRGB(255, 0, 0),
+	EnemyColor = Color3.fromRGB(255, 0, 0),
+	FriendlyColor = Color3.fromRGB(0, 255, 0),
+}
+
+-- [[ // ESP Drawing Helpers // ]]
+local function NewLine(color, thickness)
+	local line = Drawing.new("Line")
+	line.Visible = false
+	line.From = Vector2.new(0, 0)
+	line.To = Vector2.new(0, 0)
+	line.Color = color
+	line.Thickness = thickness
+	line.Transparency = 1
+	return line
+end
+
+local function VisLib(lib, state)
+	for _, v in pairs(lib) do
+		v.Visible = state
+	end
+end
+
+local function ColorizeLib(lib, color)
+	for _, v in pairs(lib) do
+		v.Color = color
+	end
+end
+
+-- [[ // ESP Player Tracking // ]]
+local espPlayers = {}
+
+local function getESPColor(plr)
+	if ESPConfig.UseRainbow then
+		return nil
+	elseif ESPConfig.TeamColor and plr.TeamColor then
+		return plr.TeamColor.Color
+	elseif ESPConfig.TeamCheck then
+		if plr.TeamColor and plr.TeamColor == LocalPlayer.TeamColor then
+			return ESPConfig.FriendlyColor
+		else
+			return ESPConfig.EnemyColor
+		end
+	else
+		return ESPConfig.BoxColor
+	end
+end
+
+local function drawESP(plr)
+	if plr == LocalPlayer then return end
+
+	repeat task.wait() until plr.Character and plr.Character:FindFirstChild("Humanoid")
+
+	local lib = {
+		TL1 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		TL2 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		TR1 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		TR2 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		BL1 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		BL2 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		BR1 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness),
+		BR2 = NewLine(ESPConfig.BoxColor, ESPConfig.BoxThickness)
+	}
+
+	local oripart = Instance.new("Part")
+	oripart.Parent = workspace
+	oripart.Transparency = 1
+	oripart.CanCollide = false
+	oripart.Size = Vector3.new(1, 1, 1)
+	oripart.Position = Vector3.new(0, 0, 0)
+
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		if not ESPConfig.Enabled then
+			VisLib(lib, false)
+			return
+		end
+
+		if plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character.Humanoid.Health > 0 and plr.Character:FindFirstChild("Head") then
+			local char = plr.Character
+			local camera = workspace.CurrentCamera
+			if not camera then return end
+
+			local humPos, vis = camera:WorldToViewportPoint(char.HumanoidRootPart.Position)
+
+			if vis then
+				oripart.Size = Vector3.new(char.HumanoidRootPart.Size.X, char.HumanoidRootPart.Size.Y * 1.5, char.HumanoidRootPart.Size.Z)
+				oripart.CFrame = CFrame.new(char.HumanoidRootPart.CFrame.Position, camera.CFrame.Position)
+
+				local sizeX = oripart.Size.X
+				local sizeY = oripart.Size.Y
+				local TL = camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(sizeX, sizeY, 0)).p)
+				local TR = camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(-sizeX, sizeY, 0)).p)
+				local BL = camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(sizeX, -sizeY, 0)).p)
+				local BR = camera:WorldToViewportPoint((oripart.CFrame * CFrame.new(-sizeX, -sizeY, 0)).p)
+
+				local color = getESPColor(plr)
+				if color then
+					ColorizeLib(lib, color)
+				end
+
+				if ESPConfig.AutoThickness then
+					local lpChar = LocalPlayer.Character
+					if lpChar and lpChar:FindFirstChild("HumanoidRootPart") then
+						local distance = (lpChar.HumanoidRootPart.Position - oripart.Position).Magnitude
+						local value = math.clamp(1 / distance * 100, 1, 4)
+						for _, v in pairs(lib) do
+							v.Thickness = value
+						end
+					end
+				else
+					for _, v in pairs(lib) do
+						v.Thickness = ESPConfig.BoxThickness
+					end
+				end
+
+				local ratio = (camera.CFrame.Position - char.HumanoidRootPart.Position).Magnitude
+				local offset = math.clamp(1 / ratio * 750, 2, 300)
+
+				lib.TL1.From = Vector2.new(TL.X, TL.Y)
+				lib.TL1.To = Vector2.new(TL.X + offset, TL.Y)
+				lib.TL2.From = Vector2.new(TL.X, TL.Y)
+				lib.TL2.To = Vector2.new(TL.X, TL.Y + offset)
+
+				lib.TR1.From = Vector2.new(TR.X, TR.Y)
+				lib.TR1.To = Vector2.new(TR.X - offset, TR.Y)
+				lib.TR2.From = Vector2.new(TR.X, TR.Y)
+				lib.TR2.To = Vector2.new(TR.X, TR.Y + offset)
+
+				lib.BL1.From = Vector2.new(BL.X, BL.Y)
+				lib.BL1.To = Vector2.new(BL.X + offset, BL.Y)
+				lib.BL2.From = Vector2.new(BL.X, BL.Y)
+				lib.BL2.To = Vector2.new(BL.X, BL.Y - offset)
+
+				lib.BR1.From = Vector2.new(BR.X, BR.Y)
+				lib.BR1.To = Vector2.new(BR.X - offset, BR.Y)
+				lib.BR2.From = Vector2.new(BR.X, BR.Y)
+				lib.BR2.To = Vector2.new(BR.X, BR.Y - offset)
+
+				VisLib(lib, true)
+			else
+				VisLib(lib, false)
+			end
+		else
+			VisLib(lib, false)
+			if not Players:FindFirstChild(plr.Name) then
+				for _, v in pairs(lib) do
+					v:Remove()
+				end
+				oripart:Destroy()
+				conn:Disconnect()
+			end
+		end
+	end)
+
+	espPlayers[plr] = {lib = lib, conn = conn, oripart = oripart}
+end
+
+-- Initialize ESP for existing players
+for _, plr in ipairs(Players:GetPlayers()) do
+	if plr ~= LocalPlayer then
+		task.spawn(drawESP, plr)
+	end
+end
+
+Players.PlayerAdded:Connect(function(plr)
+	task.spawn(drawESP, plr)
+end)
+
+Players.PlayerRemoving:Connect(function(plr)
+	local data = espPlayers[plr]
+	if data then
+		for _, v in pairs(data.lib) do
+			v:Remove()
+		end
+		if data.oripart then
+			data.oripart:Destroy()
+		end
+		if data.conn then
+			data.conn:Disconnect()
+		end
+		espPlayers[plr] = nil
+	end
+end)
+
+-- Rainbow ESP loop
+task.spawn(function()
+	while true do
+		if ESPConfig.Enabled and ESPConfig.UseRainbow then
+			local hue = (tick() % 5) / 5
+			local color = Color3.fromHSV(hue, 0.6, 1)
+			for _, data in pairs(espPlayers) do
+				ColorizeLib(data.lib, color)
+			end
+		end
+		task.wait(0.05)
+	end
+end)
+
+-- [[ // ESP UI // ]]
+esp_main:CreateToggle({
+	Name = "Enabled",
+	State = false,
+	Callback = function(State)
+		ESPConfig.Enabled = State
+	end
+})
+
+esp_main:CreateToggle({
+	Name = "Team Check",
+	State = false,
+	Callback = function(State)
+		ESPConfig.TeamCheck = State
+	end
+})
+
+esp_main:CreateToggle({
+	Name = "Team Color",
+	State = false,
+	Callback = function(State)
+		ESPConfig.TeamColor = State
+	end
+})
+
+esp_main:CreateToggle({
+	Name = "Auto Thickness",
+	State = true,
+	Callback = function(State)
+		ESPConfig.AutoThickness = State
+	end
+})
+
+esp_main:CreateToggle({
+	Name = "Use Rainbow",
+	State = false,
+	Callback = function(State)
+		ESPConfig.UseRainbow = State
+	end
+})
+
+esp_main:CreateSlider({
+	Name = "Box Thickness",
+	State = 2,
+	Min = 1,
+	Max = 10,
+	Decimals = 1,
+	Suffix = "px",
+	Callback = function(State)
+		ESPConfig.BoxThickness = State
+	end
+})
+
+esp_color:CreateColorpicker({
+	Name = "Box Color",
+	State = Color3.fromRGB(255, 0, 0),
+	Callback = function(Color)
+		ESPConfig.BoxColor = Color
+	end
+})
+
+esp_color:CreateColorpicker({
+	Name = "Enemy Color",
+	State = Color3.fromRGB(255, 0, 0),
+	Callback = function(Color)
+		ESPConfig.EnemyColor = Color
+	end
+})
+
+esp_color:CreateColorpicker({
+	Name = "Friendly Color",
+	State = Color3.fromRGB(0, 255, 0),
+	Callback = function(Color)
+		ESPConfig.FriendlyColor = Color
+	end
+})
